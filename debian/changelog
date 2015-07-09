@@ -1,3 +1,9 @@
+openssl (1.0.2d-1~wmf1) jessie-wikimedia; urgency=high
+
+  * Update to 1.0.2d for CVE-2015-1793
+
+ -- Brandon Black <bblack@wikimedia.org>  Thu, 09 Jul 2015 13:28:30 +0000
+
 openssl (1.0.2c-1) unstable; urgency=medium
 
   * New upstream version
