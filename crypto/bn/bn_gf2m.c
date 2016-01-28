@@ -575,7 +575,7 @@ int BN_GF2m_mod_sqr_arr(BIGNUM *r, const BIGNUM *a, const int p[],
     bn_check_top(a);
     BN_CTX_start(ctx);
     if ((s = BN_CTX_get(ctx)) == NULL)
-        goto err;
+        return 0;
     if (!bn_wexpand(s, 2 * a->top))
         goto err;
 
@@ -699,21 +699,18 @@ int BN_GF2m_mod_inv(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
         int top = p->top;
         BN_ULONG *udp, *bdp, *vdp, *cdp;
 
-        if (!bn_wexpand(u, top))
-            goto err;
+        bn_wexpand(u, top);
         udp = u->d;
         for (i = u->top; i < top; i++)
             udp[i] = 0;
         u->top = top;
-        if (!bn_wexpand(b, top))
-          goto err;
+        bn_wexpand(b, top);
         bdp = b->d;
         bdp[0] = 1;
         for (i = 1; i < top; i++)
             bdp[i] = 0;
         b->top = top;
-        if (!bn_wexpand(c, top))
-          goto err;
+        bn_wexpand(c, top);
         cdp = c->d;
         for (i = 0; i < top; i++)
             cdp[i] = 0;

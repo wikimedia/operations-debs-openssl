@@ -66,10 +66,6 @@ void OPENSSL_cleanse(void *ptr, size_t len)
 {
     unsigned char *p = ptr;
     size_t loop = len, ctr = cleanse_ctr;
-
-    if (ptr == NULL)
-        return;
-
     while (loop--) {
         *(p++) = (unsigned char)ctr;
         ctr += (17 + ((size_t)p & 0xF));

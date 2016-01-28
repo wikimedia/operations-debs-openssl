@@ -256,8 +256,8 @@ SSL_SESSION *ssl_session_dup(SSL_SESSION *src, int ticket)
     dest->tlsext_ecpointformatlist = NULL;
     dest->tlsext_ellipticcurvelist = NULL;
 # endif
-    dest->tlsext_tick = NULL;
 #endif
+    dest->tlsext_tick = NULL;
 #ifndef OPENSSL_NO_SRP
     dest->srp_username = NULL;
 #endif
@@ -324,6 +324,7 @@ SSL_SESSION *ssl_session_dup(SSL_SESSION *src, int ticket)
             goto err;
     }
 # endif
+#endif
 
     if (ticket != 0) {
         dest->tlsext_tick = BUF_memdup(src->tlsext_tick, src->tlsext_ticklen);
@@ -333,7 +334,6 @@ SSL_SESSION *ssl_session_dup(SSL_SESSION *src, int ticket)
         dest->tlsext_tick_lifetime_hint = 0;
         dest->tlsext_ticklen = 0;
     }
-#endif
 
 #ifndef OPENSSL_NO_SRP
     if (src->srp_username) {

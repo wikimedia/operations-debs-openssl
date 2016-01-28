@@ -225,11 +225,12 @@ static int def_load_bio(CONF *conf, BIO *in, long *line)
         goto err;
     }
 
-    section = BUF_strdup("default");
+    section = (char *)OPENSSL_malloc(10);
     if (section == NULL) {
         CONFerr(CONF_F_DEF_LOAD_BIO, ERR_R_MALLOC_FAILURE);
         goto err;
     }
+    BUF_strlcpy(section, "default", 10);
 
     if (_CONF_new_data(conf) == 0) {
         CONFerr(CONF_F_DEF_LOAD_BIO, ERR_R_MALLOC_FAILURE);

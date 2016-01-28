@@ -1370,12 +1370,9 @@ int dtls1_shutdown(SSL *s)
 {
     int ret;
 #ifndef OPENSSL_NO_SCTP
-    BIO *wbio;
-
-    wbio = SSL_get_wbio(s);
-    if (wbio != NULL && BIO_dgram_is_sctp(wbio) &&
+    if (BIO_dgram_is_sctp(SSL_get_wbio(s)) &&
         !(s->shutdown & SSL_SENT_SHUTDOWN)) {
-        ret = BIO_dgram_sctp_wait_for_dry(wbio);
+        ret = BIO_dgram_sctp_wait_for_dry(SSL_get_wbio(s));
         if (ret < 0)
             return -1;
 

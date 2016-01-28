@@ -99,6 +99,8 @@ static void identity(char *ptr)
 
 static int append_buf(char **buf, const char *s, int *size, int step)
 {
+    int l = strlen(s);
+
     if (*buf == NULL) {
         *size = step;
         *buf = OPENSSL_malloc(*size);
@@ -106,6 +108,9 @@ static int append_buf(char **buf, const char *s, int *size, int step)
             return 0;
         **buf = '\0';
     }
+
+    if (**buf != '\0')
+        l += 2;                 /* ", " */
 
     if (strlen(*buf) + strlen(s) >= (unsigned int)*size) {
         *size += step;
