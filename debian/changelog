@@ -1,6 +1,13 @@
+openssl (1.0.2f-1~wmf1) jessie-wikimedia.org; urgency=medium
+
+  * Upgrade to 1.0.2f
+
+ -- Moritz Muehlenhoff <moritz@wikimedia.org>  Thu, 28 Jan 2016 16:42:07 +0100
+
 openssl (1.0.2e-1~wmf1) jessie-wikimedia; urgency=medium
 
-  * Update to 1.0.2d for CVE-2015-3193, CVE-2015-3194, CVE-2015-3195
+  * Update to 1.0.2e for CVE-2015-3193, CVE-2015-3194, CVE-2015-3195
+    (initially had a typo which said 1.0.2d)
 
  -- Moritz Muehlenhoff <moritz@wikimedia.org>  Mon, 07 Dec 2015 13:06:25 +0100
 
