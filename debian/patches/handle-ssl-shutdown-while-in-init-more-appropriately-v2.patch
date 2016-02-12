@@ -1,0 +1,99 @@
+From 64193c8218540499984cd63cda41f3cd491f3f59 Mon Sep 17 00:00:00 2001
+From: Matt Caswell <matt@openssl.org>
+Date: Tue, 2 Feb 2016 10:05:43 +0000
+Subject: [PATCH] Handle SSL_shutdown while in init more appropriately #2
+
+Previous commit f73c737c7 attempted to "fix" a problem with the way
+SSL_shutdown() behaved whilst in mid-handshake. The original behaviour had
+SSL_shutdown() return immediately having taken no action if called mid-
+handshake with a return value of 1 (meaning everything was shutdown
+successfully). In fact the shutdown has not been successful.
+
+Commit f73c737c7 changed that to send a close_notify anyway and then
+return. This seems to be causing some problems for some applications so
+perhaps a better (much simpler) approach is revert to the previous
+behaviour (no attempt at a shutdown), but return -1 (meaning the shutdown
+was not successful).
+
+This also fixes a bug where SSL_shutdown always returns 0 when shutdown
+*very* early in the handshake (i.e. we are still using SSLv23_method).
+
+Reviewed-by: Viktor Dukhovni <viktor@openssl.org>
+---
+ ssl/s3_lib.c  | 15 ---------------
+ ssl/ssl.h     |  1 -
+ ssl/ssl_err.c |  1 -
+ ssl/ssl_lib.c |  7 ++++++-
+ 4 files changed, 6 insertions(+), 18 deletions(-)
+
+diff --git a/ssl/s3_lib.c b/ssl/s3_lib.c
+index f846cb5..6a06625 100644
+--- a/ssl/s3_lib.c
++++ b/ssl/s3_lib.c
+@@ -4326,21 +4326,6 @@ int ssl3_shutdown(SSL *s)
+         }
+ #endif
+     } else if (!(s->shutdown & SSL_RECEIVED_SHUTDOWN)) {
+-        if (SSL_in_init(s)) {
+-            /*
+-             * We can't shutdown properly if we are in the middle of a
+-             * handshake. Doing so is problematic because the peer may send a
+-             * CCS before it acts on our close_notify. However we should not
+-             * continue to process received handshake messages or CCS once our
+-             * close_notify has been sent. Therefore any close_notify from
+-             * the peer will be unreadable because we have not moved to the next
+-             * cipher state. Its best just to avoid this can-of-worms. Return
+-             * an error if we are wanting to wait for a close_notify from the
+-             * peer and we are in init.
+-             */
+-            SSLerr(SSL_F_SSL3_SHUTDOWN, SSL_R_SHUTDOWN_WHILE_IN_INIT);
+-            return -1;
+-        }
+         /*
+          * If we are waiting for a close from our peer, we are closed
+          */
+diff --git a/ssl/ssl.h b/ssl/ssl.h
+index ae8c925..04d4007 100644
+--- a/ssl/ssl.h
++++ b/ssl/ssl.h
+@@ -2713,7 +2713,6 @@ void ERR_load_SSL_strings(void);
+ # define SSL_F_SSL3_SETUP_KEY_BLOCK                       157
+ # define SSL_F_SSL3_SETUP_READ_BUFFER                     156
+ # define SSL_F_SSL3_SETUP_WRITE_BUFFER                    291
+-# define SSL_F_SSL3_SHUTDOWN                              396
+ # define SSL_F_SSL3_WRITE_BYTES                           158
+ # define SSL_F_SSL3_WRITE_PENDING                         159
+ # define SSL_F_SSL_ADD_CERT_CHAIN                         318
+diff --git a/ssl/ssl_err.c b/ssl/ssl_err.c
+index dd3b2af..704088d 100644
+--- a/ssl/ssl_err.c
++++ b/ssl/ssl_err.c
+@@ -206,7 +206,6 @@ static ERR_STRING_DATA SSL_str_functs[] = {
+     {ERR_FUNC(SSL_F_SSL3_SETUP_KEY_BLOCK), "ssl3_setup_key_block"},
+     {ERR_FUNC(SSL_F_SSL3_SETUP_READ_BUFFER), "ssl3_setup_read_buffer"},
+     {ERR_FUNC(SSL_F_SSL3_SETUP_WRITE_BUFFER), "ssl3_setup_write_buffer"},
+-    {ERR_FUNC(SSL_F_SSL3_SHUTDOWN), "ssl3_shutdown"},
+     {ERR_FUNC(SSL_F_SSL3_WRITE_BYTES), "ssl3_write_bytes"},
+     {ERR_FUNC(SSL_F_SSL3_WRITE_PENDING), "ssl3_write_pending"},
+     {ERR_FUNC(SSL_F_SSL_ADD_CERT_CHAIN), "ssl_add_cert_chain"},
+diff --git a/ssl/ssl_lib.c b/ssl/ssl_lib.c
+index 2744be8..7c23f9e 100644
+--- a/ssl/ssl_lib.c
++++ b/ssl/ssl_lib.c
+@@ -1060,7 +1060,12 @@ int SSL_shutdown(SSL *s)
+         return -1;
+     }
+ 
+-    return s->method->ssl_shutdown(s);
++    if (!SSL_in_init(s)) {
++        return s->method->ssl_shutdown(s);
++    } else {
++        SSLerr(SSL_F_SSL_SHUTDOWN, SSL_R_SHUTDOWN_WHILE_IN_INIT);
++        return -1;
++    }
+ }
+ 
+ int SSL_renegotiate(SSL *s)
+-- 
+1.9.1
+

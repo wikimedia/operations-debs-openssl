@@ -1,3 +1,11 @@
+openssl (1.0.2f-1~wmf3) jessie-wikimedia; urgency=medium
+
+  * Cherrypick 64193c8218540499984cd63cda41f3cd491f3f59 from the 1.0.2
+    branch to fix spurious log messages if SSL clients quit during the
+    SSL handshake (Bug: T126616)
+
+ -- Moritz Muehlenhoff <mmuhlenhoff@wikimedia.org>  Fri, 12 Feb 2016 11:32:31 +0100
+
 openssl (1.0.2f-1~wmf2) jessie-wikimedia; urgency=medium
 
   * Correct target distribution
