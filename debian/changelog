@@ -1,3 +1,11 @@
+openssl (1.0.2g-1~wmf1) jessie-wikimedia; urgency=medium
+
+  * Update to 1.0.2g
+  * Drop handle-ssl-shutdown-while-in-init-more-appropriately-v2.patch
+    (part of new upstream release)
+
+ -- Moritz Muehlenhoff <mmuhlenhoff@wikimedia.org>  Tue, 01 Mar 2016 17:24:24 +0100
+
 openssl (1.0.2f-1~wmf3) jessie-wikimedia; urgency=medium
 
   * Cherrypick 64193c8218540499984cd63cda41f3cd491f3f59 from the 1.0.2
