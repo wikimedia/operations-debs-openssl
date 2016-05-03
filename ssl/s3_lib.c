@@ -198,7 +198,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      },
 
 /* Cipher 03 */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_RSA_RC4_40_MD5,
@@ -213,7 +212,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      128,
      },
-#endif
 
 /* Cipher 04 */
     {
@@ -248,7 +246,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      },
 
 /* Cipher 06 */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_RSA_RC2_40_MD5,
@@ -263,7 +260,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      128,
      },
-#endif
 
 /* Cipher 07 */
 #ifndef OPENSSL_NO_IDEA
@@ -284,7 +280,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
 #endif
 
 /* Cipher 08 */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_RSA_DES_40_CBC_SHA,
@@ -299,10 +294,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      56,
      },
-#endif
 
 /* Cipher 09 */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_RSA_DES_64_CBC_SHA,
@@ -317,7 +310,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      56,
      },
-#endif
 
 /* Cipher 0A */
     {
@@ -337,7 +329,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
 
 /* The DH ciphers */
 /* Cipher 0B */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      0,
      SSL3_TXT_DH_DSS_DES_40_CBC_SHA,
@@ -352,10 +343,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      56,
      },
-#endif
 
 /* Cipher 0C */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_DH_DSS_DES_64_CBC_SHA,
@@ -370,7 +359,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      56,
      },
-#endif
 
 /* Cipher 0D */
     {
@@ -389,7 +377,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      },
 
 /* Cipher 0E */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      0,
      SSL3_TXT_DH_RSA_DES_40_CBC_SHA,
@@ -404,10 +391,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      56,
      },
-#endif
 
 /* Cipher 0F */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_DH_RSA_DES_64_CBC_SHA,
@@ -422,7 +407,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      56,
      },
-#endif
 
 /* Cipher 10 */
     {
@@ -442,7 +426,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
 
 /* The Ephemeral DH ciphers */
 /* Cipher 11 */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_EDH_DSS_DES_40_CBC_SHA,
@@ -457,10 +440,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      56,
      },
-#endif
 
 /* Cipher 12 */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_EDH_DSS_DES_64_CBC_SHA,
@@ -475,7 +456,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      56,
      },
-#endif
 
 /* Cipher 13 */
     {
@@ -494,7 +474,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      },
 
 /* Cipher 14 */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_EDH_RSA_DES_40_CBC_SHA,
@@ -509,10 +488,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      56,
      },
-#endif
 
 /* Cipher 15 */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_EDH_RSA_DES_64_CBC_SHA,
@@ -527,7 +504,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      56,
      },
-#endif
 
 /* Cipher 16 */
     {
@@ -546,7 +522,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      },
 
 /* Cipher 17 */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_ADH_RC4_40_MD5,
@@ -561,7 +536,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      128,
      },
-#endif
 
 /* Cipher 18 */
     {
@@ -580,7 +554,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      },
 
 /* Cipher 19 */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_ADH_DES_40_CBC_SHA,
@@ -595,10 +568,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      128,
      },
-#endif
 
 /* Cipher 1A */
-#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_ADH_DES_64_CBC_SHA,
@@ -613,7 +584,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      56,
      },
-#endif
 
 /* Cipher 1B */
     {
@@ -685,7 +655,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
 #ifndef OPENSSL_NO_KRB5
 /* The Kerberos ciphers*/
 /* Cipher 1E */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_KRB5_DES_64_CBC_SHA,
@@ -700,7 +669,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      56,
      },
-# endif
 
 /* Cipher 1F */
     {
@@ -751,7 +719,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      },
 
 /* Cipher 22 */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_KRB5_DES_64_CBC_MD5,
@@ -766,7 +733,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      56,
      },
-# endif
 
 /* Cipher 23 */
     {
@@ -817,7 +783,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      },
 
 /* Cipher 26 */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_KRB5_DES_40_CBC_SHA,
@@ -832,10 +797,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      56,
      },
-# endif
 
 /* Cipher 27 */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_KRB5_RC2_40_CBC_SHA,
@@ -850,10 +813,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      128,
      },
-# endif
 
 /* Cipher 28 */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_KRB5_RC4_40_SHA,
@@ -868,10 +829,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      128,
      },
-# endif
 
 /* Cipher 29 */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_KRB5_DES_40_CBC_MD5,
@@ -886,10 +845,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      56,
      },
-# endif
 
 /* Cipher 2A */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_KRB5_RC2_40_CBC_MD5,
@@ -904,10 +861,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      128,
      },
-# endif
 
 /* Cipher 2B */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      SSL3_TXT_KRB5_RC4_40_MD5,
@@ -922,7 +877,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      40,
      128,
      },
-# endif
 #endif                          /* OPENSSL_NO_KRB5 */
 
 /* New AES ciphersuites */
@@ -1346,7 +1300,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
 # endif
 
     /* Cipher 62 */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      TLS1_TXT_RSA_EXPORT1024_WITH_DES_CBC_SHA,
@@ -1361,10 +1314,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      56,
      },
-# endif
 
     /* Cipher 63 */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      TLS1_TXT_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA,
@@ -1379,10 +1330,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      56,
      },
-# endif
 
     /* Cipher 64 */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      TLS1_TXT_RSA_EXPORT1024_WITH_RC4_56_SHA,
@@ -1397,10 +1346,8 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      128,
      },
-# endif
 
     /* Cipher 65 */
-# ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
     {
      1,
      TLS1_TXT_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA,
@@ -1415,7 +1362,6 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
      56,
      128,
      },
-# endif
 
     /* Cipher 66 */
     {
@@ -4380,6 +4326,21 @@ int ssl3_shutdown(SSL *s)
         }
 #endif
     } else if (!(s->shutdown & SSL_RECEIVED_SHUTDOWN)) {
+        if (SSL_in_init(s)) {
+            /*
+             * We can't shutdown properly if we are in the middle of a
+             * handshake. Doing so is problematic because the peer may send a
+             * CCS before it acts on our close_notify. However we should not
+             * continue to process received handshake messages or CCS once our
+             * close_notify has been sent. Therefore any close_notify from
+             * the peer will be unreadable because we have not moved to the next
+             * cipher state. Its best just to avoid this can-of-worms. Return
+             * an error if we are wanting to wait for a close_notify from the
+             * peer and we are in init.
+             */
+            SSLerr(SSL_F_SSL3_SHUTDOWN, SSL_R_SHUTDOWN_WHILE_IN_INIT);
+            return -1;
+        }
         /*
          * If we are waiting for a close from our peer, we are closed
          */
