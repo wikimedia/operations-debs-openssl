@@ -1,0 +1,55 @@
+zero pad DHE public key in ServerKeyExchange message for interop:
+https://github.com/openssl/openssl/pull/1350/commits/3bfdc80ef28664b4488a25cd65077b9a1cb488c8
+
+diff --git a/ssl/s3_srvr.c b/ssl/s3_srvr.c
+index c95d610..472d1a2 100644
+--- a/ssl/s3_srvr.c
++++ b/ssl/s3_srvr.c
+@@ -1600,6 +1600,9 @@ int ssl3_send_server_key_exchange(SSL *s)
+     unsigned int u;
+ #endif
+ #ifndef OPENSSL_NO_DH
++# ifdef OPENSSL_NO_RSA
++    int j;
++# endif
+     DH *dh = NULL, *dhp;
+ #endif
+ #ifndef OPENSSL_NO_ECDH
+@@ -1861,6 +1864,16 @@ int ssl3_send_server_key_exchange(SSL *s)
+                 n += 1 + nr[i];
+             else
+ #endif
++#ifndef OPENSSL_NO_DH
++            /*
++             * for interoperability with some versions of the Microsoft TLS
++             * stack, we need to zero pad the DHE pub key to the same length
++             * as the prime, so use the length of the prime here
++             */
++            if ((i == 2) && (type & (SSL_kEDH)))
++                n += 2 + nr[0];
++            else
++#endif
+                 n += 2 + nr[i];
+         }
+ 
+@@ -1895,6 +1908,20 @@ int ssl3_send_server_key_exchange(SSL *s)
+                 p++;
+             } else
+ #endif
++#ifndef OPENSSL_NO_DH
++            /*
++             * for interoperability with some versions of the Microsoft TLS
++             * stack, we need to zero pad the DHE pub key to the same length
++             * as the prime
++             */
++            if ((i == 2) && (type & (SSL_kEDH))) {
++                s2n(nr[0], p);
++                for (j = 0; j < (nr[0] - nr[2]); ++j) {
++                    *p = 0;
++                    ++p;
++                }
++            } else
++#endif
+                 s2n(nr[i], p);
+             BN_bn2bin(r[i], p);
+             p += nr[i];

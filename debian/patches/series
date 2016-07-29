@@ -16,3 +16,4 @@ block_digicert_malaysia.patch
 #padlock_conf.patch
 disable_freelist.patch
 extend-version-script.patch
+zero-pad-dhe.patch
