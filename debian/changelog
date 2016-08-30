@@ -1,3 +1,9 @@
+openssl (1.1.0-1+wmf1) experimental; urgency=medium
+
+  * Added local chapoly preference hack patch
+
+ -- Brandon Black <bblack@wikimedia.org>  Tue, 30 Aug 2016 02:23:57 +0000
+
 openssl (1.1.0-1) experimental; urgency=medium
 
   [ Kurt Roeckx ]
