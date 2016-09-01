@@ -1,3 +1,9 @@
+openssl (1.1.0-1+wmf2) experimental; urgency=medium
+
+  * rules: enable-weak-ssl-ciphers for 3DES compat
+
+ -- Brandon Black <bblack@wikimedia.org>  Thu, 01 Sep 2016 17:14:02 +0000
+
 openssl (1.1.0-1+wmf1) experimental; urgency=medium
 
   * Added local chapoly preference hack patch
