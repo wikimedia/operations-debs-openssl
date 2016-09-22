@@ -1,8 +1,8 @@
-Index: openssl-1.0.2f/Configure
+Index: openssl/Configure
 ===================================================================
---- openssl-1.0.2f.orig/Configure
-+++ openssl-1.0.2f/Configure
-@@ -127,6 +127,10 @@ my $clang_devteam_warn = "-Wno-unused-pa
+--- openssl.orig/Configure
++++ openssl/Configure
+@@ -131,6 +131,10 @@ my $clang_devteam_warn = "-Wno-unused-pa
  # Warn that "make depend" should be run?
  my $warn_make_depend = 0;
  
@@ -13,7 +13,7 @@ Index: openssl-1.0.2f/Configure
  my $strict_warnings = 0;
  
  my $x86_gcc_des="DES_PTR DES_RISC1 DES_UNROLL";
-@@ -363,6 +367,55 @@ my %table=(
+@@ -367,6 +371,55 @@ my %table=(
  "osf1-alpha-cc",  "cc:-std1 -tune host -O4 -readonly_strings::(unknown):::SIXTY_FOUR_BIT_LONG RC4_CHUNK:${alpha_asm}:dlfcn:alpha-osf1-shared:::.so",
  "tru64-alpha-cc", "cc:-std1 -tune host -fast -readonly_strings::-pthread:::SIXTY_FOUR_BIT_LONG RC4_CHUNK:${alpha_asm}:dlfcn:alpha-osf1-shared::-msym:.so",
  

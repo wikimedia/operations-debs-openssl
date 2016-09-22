@@ -1,8 +1,8 @@
-diff --git a/ssl/s3_lib.c b/ssl/s3_lib.c
-index 494bfd5..2753400 100644
---- a/ssl/s3_lib.c
-+++ b/ssl/s3_lib.c
-@@ -4195,7 +4195,8 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, STACK_OF(SSL_CIPHER) *clnt,
+Index: openssl/ssl/s3_lib.c
+===================================================================
+--- openssl.orig/ssl/s3_lib.c
++++ openssl/ssl/s3_lib.c
+@@ -4195,7 +4195,8 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, S
      int i, ii, ok;
      CERT *cert;
      unsigned long alg_k, alg_a, mask_k, mask_a, emask_k, emask_a;
@@ -12,7 +12,7 @@ index 494bfd5..2753400 100644
  
      /* Let's see which ciphers we can support */
      cert = s->cert;
-@@ -4229,17 +4230,50 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, STACK_OF(SSL_CIPHER) *clnt,
+@@ -4229,17 +4230,50 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, S
      if (s->options & SSL_OP_CIPHER_SERVER_PREFERENCE || tls1_suiteb(s)) {
          prio = srvr;
          allow = clnt;
@@ -70,7 +70,7 @@ index 494bfd5..2753400 100644
      }
  
      tls1_set_cert_validity(s);
-@@ -4251,10 +4285,14 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, STACK_OF(SSL_CIPHER) *clnt,
+@@ -4251,10 +4285,14 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, S
          if ((c->algorithm_ssl & SSL_TLSV1_2) && !SSL_USE_TLS1_2_CIPHERS(s))
              continue;
  
