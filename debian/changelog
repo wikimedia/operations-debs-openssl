@@ -1,3 +1,9 @@
+openssl (1.0.2i-1~wmf1) jessie-wikimedia; urgency=medium
+
+  * Update to 1.0.2i
+
+ -- Moritz Muehlenhoff <mmuhlenhoff@wikimedia.org>  Thu, 22 Sep 2016 12:43:21 +0200
+
 openssl (1.0.2h-1~wmf4) jessie-wikimedia; urgency=medium
 
   * Added a further local patch to prefer chapoly more-robustly.
