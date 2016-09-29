@@ -1,8 +1,8 @@
-Index: openssl/Configure
+Index: openssl-1.0.0c/Configure
 ===================================================================
---- openssl.orig/Configure
-+++ openssl/Configure
-@@ -1834,7 +1834,8 @@ while (<IN>)
+--- openssl-1.0.0c.orig/Configure	2010-12-12 16:10:12.000000000 +0100
++++ openssl-1.0.0c/Configure	2010-12-12 17:12:38.000000000 +0100
+@@ -1605,7 +1605,8 @@
  	elsif ($shared_extension ne "" && $shared_extension =~ /^\.s([ol])\.[^\.]*\.[^\.]*$/)
  		{
  		my $sotmp = $1;

@@ -1,8 +1,7 @@
-Index: openssl/openssl.ld
-===================================================================
---- openssl.orig/openssl.ld
-+++ openssl/openssl.ld
-@@ -4611,5 +4611,7 @@ OPENSSL_1.0.2 {
+diff -aur openssl.orig/openssl.ld openssl/openssl.ld
+--- openssl.orig/openssl.ld	2016-03-03 11:19:38.888050124 +0100
++++ openssl/openssl.ld	2016-03-03 11:25:09.708605927 +0100
+@@ -4611,5 +4611,7 @@
  		BUF_strnlen;
  		sk_deep_copy;
  		SSL_test_functions;
@@ -10,3 +9,4 @@ Index: openssl/openssl.ld
 +		SRP_user_pwd_free;
  } OPENSSL_1.0.1d;
  
+

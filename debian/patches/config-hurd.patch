@@ -1,8 +1,8 @@
-Index: openssl/config
+Index: openssl-1.0.0c/config
 ===================================================================
---- openssl.orig/config
-+++ openssl/config
-@@ -170,8 +170,8 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${
+--- openssl-1.0.0c.orig/config	2010-12-12 16:09:43.000000000 +0100
++++ openssl-1.0.0c/config	2010-12-12 16:09:48.000000000 +0100
+@@ -170,8 +170,8 @@
  	echo "${MACHINE}-whatever-linux1"; exit 0
  	;;
  

@@ -1,7 +1,7 @@
-Index: openssl/crypto/rand/md_rand.c
+Index: openssl-1.0.2/crypto/rand/md_rand.c
 ===================================================================
---- openssl.orig/crypto/rand/md_rand.c
-+++ openssl/crypto/rand/md_rand.c
+--- openssl-1.0.2.orig/crypto/rand/md_rand.c
++++ openssl-1.0.2/crypto/rand/md_rand.c
 @@ -480,6 +480,7 @@ int ssleay_rand_bytes(unsigned char *buf
          MD_Update(&m, (unsigned char *)&(md_c[0]), sizeof(md_c));
  

@@ -45,11 +45,11 @@ Subject: [PATCH] Implementation of draft and RFC versions of CHACHA20-POLY1305
  create mode 100644 crypto/chacha20poly1305/poly1305.c
  create mode 100644 crypto/evp/e_chacha20poly1305.c
 
-Index: openssl/Configure
-===================================================================
---- openssl.orig/Configure
-+++ openssl/Configure
-@@ -154,25 +154,25 @@ my $tlib="-lnsl -lsocket";
+diff --git a/Configure b/Configure
+index 4a715dc..f3ab6cd 100755
+--- a/Configure
++++ b/Configure
+@@ -146,25 +146,25 @@ my $tlib="-lnsl -lsocket";
  my $bits1="THIRTY_TWO_BIT ";
  my $bits2="SIXTY_FOUR_BIT ";
  
@@ -89,7 +89,7 @@ Index: openssl/Configure
  
  # As for $BSDthreads. Idea is to maintain "collective" set of flags,
  # which would cover all BSD flavors. -pthread applies to them all, 
-@@ -767,6 +767,7 @@ my $idx_wp_obj = $idx++;
+@@ -710,6 +710,7 @@ my $idx_wp_obj = $idx++;
  my $idx_cmll_obj = $idx++;
  my $idx_modes_obj = $idx++;
  my $idx_engines_obj = $idx++;
@@ -97,7 +97,7 @@ Index: openssl/Configure
  my $idx_perlasm_scheme = $idx++;
  my $idx_dso_scheme = $idx++;
  my $idx_shared_target = $idx++;
-@@ -809,6 +810,7 @@ my $bf	="crypto/bf/bf_locl.h";
+@@ -752,6 +753,7 @@ my $bf	="crypto/bf/bf_locl.h";
  my $bn_asm	="bn_asm.o";
  my $des_enc="des_enc.o fcrypt_b.o";
  my $aes_enc="aes_core.o aes_cbc.o";
@@ -105,7 +105,7 @@ Index: openssl/Configure
  my $bf_enc	="bf_enc.o";
  my $cast_enc="c_enc.o";
  my $rc4_enc="rc4_enc.o rc4_skey.o";
-@@ -1264,7 +1266,7 @@ $openssldir=$prefix . "/" . $openssldir
+@@ -1210,7 +1212,7 @@ $openssldir=$prefix . "/" . $openssldir if $openssldir !~ /(^\/|^[a-zA-Z]:[\\\/]
  
  print "IsMK1MF=$IsMK1MF\n";
  
@@ -114,7 +114,7 @@ Index: openssl/Configure
  my $cc = $fields[$idx_cc];
  # Allow environment CC to override compiler...
  if($ENV{CC}) {
-@@ -1293,6 +1295,7 @@ my $wp_obj = $fields[$idx_wp_obj];
+@@ -1239,6 +1241,7 @@ my $wp_obj = $fields[$idx_wp_obj];
  my $cmll_obj = $fields[$idx_cmll_obj];
  my $modes_obj = $fields[$idx_modes_obj];
  my $engines_obj = $fields[$idx_engines_obj];
@@ -122,7 +122,7 @@ Index: openssl/Configure
  my $perlasm_scheme = $fields[$idx_perlasm_scheme];
  my $dso_scheme = $fields[$idx_dso_scheme];
  my $shared_target = $fields[$idx_shared_target];
-@@ -1460,7 +1463,7 @@ if ($no_asm)
+@@ -1405,7 +1408,7 @@ if ($no_asm)
  	{
  	$cpuid_obj=$bn_obj=$ec_obj=
  	$des_obj=$aes_obj=$bf_obj=$cast_obj=$rc4_obj=$rc5_obj=$cmll_obj=
@@ -131,9 +131,9 @@ Index: openssl/Configure
  	}
  
  if (!$no_shared)
-@@ -1612,6 +1615,14 @@ $des_obj=$des_enc	unless ($des_obj =~ /\
- $bf_obj=$bf_enc		unless ($bf_obj =~ /\.o$/);
+@@ -1558,6 +1561,14 @@ $bf_obj=$bf_enc		unless ($bf_obj =~ /\.o$/);
  $cast_obj=$cast_enc	unless ($cast_obj =~ /\.o$/);
+ $rc4_obj=$rc4_enc	unless ($rc4_obj =~ /\.o$/);
  $rc5_obj=$rc5_enc	unless ($rc5_obj =~ /\.o$/);
 +if ($chapoly_obj =~ /\.o$/)
 +	{
@@ -143,9 +143,9 @@ Index: openssl/Configure
 +	{
 +	$chapoly_obj=$chapoly_enc;
 +	}
- if ($rc4_obj =~ /\.o$/)
+ if ($sha1_obj =~ /\.o$/)
  	{
- 	$cflags.=" -DRC4_ASM";
+ #	$sha1_obj=$sha1_enc;
 @@ -1740,6 +1751,7 @@ while (<IN>)
  	s/^WP_ASM_OBJ=.*$/WP_ASM_OBJ= $wp_obj/;
  	s/^CMLL_ENC=.*$/CMLL_ENC= $cmll_obj/;
@@ -179,11 +179,11 @@ Index: openssl/Configure
  \$perlasm_scheme = $perlasm_scheme
  \$dso_scheme   = $dso_scheme
  \$shared_target= $shared_target
-Index: openssl/Makefile.org
-===================================================================
---- openssl.orig/Makefile.org
-+++ openssl/Makefile.org
-@@ -92,6 +92,7 @@ BN_ASM= bn_asm.o
+diff --git a/Makefile.org b/Makefile.org
+index 76fdbdf..6556ef6 100644
+--- a/Makefile.org
++++ b/Makefile.org
+@@ -91,6 +91,7 @@ BN_ASM= bn_asm.o
  EC_ASM=
  DES_ENC= des_enc.o fcrypt_b.o
  AES_ENC= aes_core.o aes_cbc.o
@@ -191,7 +191,7 @@ Index: openssl/Makefile.org
  BF_ENC= bf_enc.o
  CAST_ENC= c_enc.o
  RC4_ENC= rc4_enc.o
-@@ -149,7 +150,7 @@ SDIRS=  \
+@@ -148,7 +149,7 @@ SDIRS=  \
  	bn ec rsa dsa ecdsa dh ecdh dso engine \
  	buffer bio stack lhash rand err \
  	evp asn1 pem x509 x509v3 conf txt_db pkcs7 pkcs12 comp ocsp ui krb5 \
@@ -200,7 +200,7 @@ Index: openssl/Makefile.org
  # keep in mind that the above list is adjusted by ./Configure
  # according to no-xxx arguments...
  
-@@ -237,6 +238,7 @@ BUILDENV=	LC_ALL=C PLATFORM='$(PLATFORM)
+@@ -234,6 +235,7 @@ BUILDENV=	LC_ALL=C PLATFORM='$(PLATFORM)' PROCESSOR='$(PROCESSOR)'\
  		WP_ASM_OBJ='$(WP_ASM_OBJ)'			\
  		MODES_ASM_OBJ='$(MODES_ASM_OBJ)'		\
  		ENGINES_ASM_OBJ='$(ENGINES_ASM_OBJ)'		\
@@ -208,10 +208,10 @@ Index: openssl/Makefile.org
  		PERLASM_SCHEME='$(PERLASM_SCHEME)'		\
  		FIPSLIBDIR='${FIPSLIBDIR}'			\
  		FIPSDIR='${FIPSDIR}'				\
-Index: openssl/apps/speed.c
-===================================================================
---- openssl.orig/apps/speed.c
-+++ openssl/apps/speed.c
+diff --git a/apps/speed.c b/apps/speed.c
+index 95adcc1..94b80a1 100644
+--- a/apps/speed.c
++++ b/apps/speed.c
 @@ -1,4 +1,4 @@
 -/* apps/speed.c */
 +/* apps/speed.c -*- mode:C; c-file-style: "eay" -*- */
@@ -227,7 +227,7 @@ Index: openssl/apps/speed.c
  static volatile int run = 0;
  
  static int mr = 0;
-@@ -241,7 +241,7 @@ static void print_result(int alg, int ru
+@@ -241,7 +241,7 @@ static void print_result(int alg, int run_no, int count, double time_used);
  static int do_multi(int multi);
  # endif
  
@@ -302,10 +302,11 @@ Index: openssl/apps/speed.c
  # ifndef OPENSSL_NO_CAMELLIA
      if (doit[D_CBC_128_CML]) {
          for (j = 0; j < SIZE_NUM; j++) {
-Index: openssl/crypto/chacha20poly1305/Makefile
-===================================================================
+diff --git a/crypto/chacha20poly1305/Makefile b/crypto/chacha20poly1305/Makefile
+new file mode 100644
+index 0000000..446eb27
 --- /dev/null
-+++ openssl/crypto/chacha20poly1305/Makefile
++++ b/crypto/chacha20poly1305/Makefile
 @@ -0,0 +1,97 @@
 +#
 +# crypto/chacha20poly1305/Makefile
@@ -404,10 +405,11 @@ Index: openssl/crypto/chacha20poly1305/Makefile
 +
 +chacha20.o: ../../include/openssl/chacha20poly1305.h chacha20.c
 +poly1305.o: ../../include/openssl/chacha20poly1305.h poly1305.c
-Index: openssl/crypto/chacha20poly1305/asm/chacha20_avx.pl
-===================================================================
+diff --git a/crypto/chacha20poly1305/asm/chacha20_avx.pl b/crypto/chacha20poly1305/asm/chacha20_avx.pl
+new file mode 100644
+index 0000000..bf3e3f0
 --- /dev/null
-+++ openssl/crypto/chacha20poly1305/asm/chacha20_avx.pl
++++ b/crypto/chacha20poly1305/asm/chacha20_avx.pl
 @@ -0,0 +1,408 @@
 +#!/usr/bin/env perl
 +
@@ -817,10 +819,11 @@ Index: openssl/crypto/chacha20poly1305/asm/chacha20_avx.pl
 +
 +close STDOUT;
 +
-Index: openssl/crypto/chacha20poly1305/asm/chacha20_avx2.pl
-===================================================================
+diff --git a/crypto/chacha20poly1305/asm/chacha20_avx2.pl b/crypto/chacha20poly1305/asm/chacha20_avx2.pl
+new file mode 100644
+index 0000000..9f31f86
 --- /dev/null
-+++ openssl/crypto/chacha20poly1305/asm/chacha20_avx2.pl
++++ b/crypto/chacha20poly1305/asm/chacha20_avx2.pl
 @@ -0,0 +1,443 @@
 +#!/usr/bin/env perl
 +
@@ -1265,10 +1268,11 @@ Index: openssl/crypto/chacha20poly1305/asm/chacha20_avx2.pl
 +
 +close STDOUT;
 +
-Index: openssl/crypto/chacha20poly1305/asm/poly1305_avx.pl
-===================================================================
+diff --git a/crypto/chacha20poly1305/asm/poly1305_avx.pl b/crypto/chacha20poly1305/asm/poly1305_avx.pl
+new file mode 100644
+index 0000000..cedeca1
 --- /dev/null
-+++ openssl/crypto/chacha20poly1305/asm/poly1305_avx.pl
++++ b/crypto/chacha20poly1305/asm/poly1305_avx.pl
 @@ -0,0 +1,732 @@
 +##############################################################################
 +#                                                                            #
@@ -2002,10 +2006,11 @@ Index: openssl/crypto/chacha20poly1305/asm/poly1305_avx.pl
 +print $code;
 +close STDOUT;
 +
-Index: openssl/crypto/chacha20poly1305/asm/poly1305_avx2.pl
-===================================================================
+diff --git a/crypto/chacha20poly1305/asm/poly1305_avx2.pl b/crypto/chacha20poly1305/asm/poly1305_avx2.pl
+new file mode 100644
+index 0000000..d2dd51f
 --- /dev/null
-+++ openssl/crypto/chacha20poly1305/asm/poly1305_avx2.pl
++++ b/crypto/chacha20poly1305/asm/poly1305_avx2.pl
 @@ -0,0 +1,984 @@
 +##############################################################################
 +#                                                                            #
@@ -2991,10 +2996,11 @@ Index: openssl/crypto/chacha20poly1305/asm/poly1305_avx2.pl
 +print $code;
 +close STDOUT;
 +
-Index: openssl/crypto/chacha20poly1305/asm/poly1305_x64.pl
-===================================================================
+diff --git a/crypto/chacha20poly1305/asm/poly1305_x64.pl b/crypto/chacha20poly1305/asm/poly1305_x64.pl
+new file mode 100644
+index 0000000..31c4c47
 --- /dev/null
-+++ openssl/crypto/chacha20poly1305/asm/poly1305_x64.pl
++++ b/crypto/chacha20poly1305/asm/poly1305_x64.pl
 @@ -0,0 +1,281 @@
 +
 +##############################################################################
@@ -3277,10 +3283,11 @@ Index: openssl/crypto/chacha20poly1305/asm/poly1305_x64.pl
 +$code =~ s/\`([^\`]*)\`/eval($1)/gem;
 +print $code;
 +close STDOUT;
-Index: openssl/crypto/chacha20poly1305/chacha20.c
-===================================================================
+diff --git a/crypto/chacha20poly1305/chacha20.c b/crypto/chacha20poly1305/chacha20.c
+new file mode 100644
+index 0000000..3044751
 --- /dev/null
-+++ openssl/crypto/chacha20poly1305/chacha20.c
++++ b/crypto/chacha20poly1305/chacha20.c
 @@ -0,0 +1,162 @@
 +/* Copyright (c) 2014, Google Inc.
 + *
@@ -3444,10 +3451,11 @@ Index: openssl/crypto/chacha20poly1305/chacha20.c
 +  U32TO8_LITTLE(nonce + 36, input[13]);
 +}
 +
-Index: openssl/crypto/chacha20poly1305/chacha20poly1305.h
-===================================================================
+diff --git a/crypto/chacha20poly1305/chacha20poly1305.h b/crypto/chacha20poly1305/chacha20poly1305.h
+new file mode 100644
+index 0000000..09b0450
 --- /dev/null
-+++ openssl/crypto/chacha20poly1305/chacha20poly1305.h
++++ b/crypto/chacha20poly1305/chacha20poly1305.h
 @@ -0,0 +1,79 @@
 +/* Copyright (c) 2014, Google Inc.
 + *
@@ -3528,10 +3536,11 @@ Index: openssl/crypto/chacha20poly1305/chacha20poly1305.h
 +#endif
 +
 +#endif  /* OPENSSL_HEADER_POLY1305_H */
-Index: openssl/crypto/chacha20poly1305/chapolytest.c
-===================================================================
+diff --git a/crypto/chacha20poly1305/chapolytest.c b/crypto/chacha20poly1305/chapolytest.c
+new file mode 100644
+index 0000000..7e2933f
 --- /dev/null
-+++ openssl/crypto/chacha20poly1305/chapolytest.c
++++ b/crypto/chacha20poly1305/chapolytest.c
 @@ -0,0 +1,470 @@
 +/* ====================================================================
 + * Copyright (c) 2011-2013 The OpenSSL Project.  All rights reserved.
@@ -4003,10 +4012,11 @@ Index: openssl/crypto/chacha20poly1305/chapolytest.c
 +    return 0;
 +}
 +
-Index: openssl/crypto/chacha20poly1305/poly1305.c
-===================================================================
+diff --git a/crypto/chacha20poly1305/poly1305.c b/crypto/chacha20poly1305/poly1305.c
+new file mode 100644
+index 0000000..50bc4a0
 --- /dev/null
-+++ openssl/crypto/chacha20poly1305/poly1305.c
++++ b/crypto/chacha20poly1305/poly1305.c
 @@ -0,0 +1,287 @@
 +/* Copyright (c) 2014, Google Inc.
 + *
@@ -4295,11 +4305,11 @@ Index: openssl/crypto/chacha20poly1305/poly1305.c
 +  U32TO8_LE(&mac[12], f3);
 +}
 +
-Index: openssl/crypto/cryptlib.c
-===================================================================
---- openssl.orig/crypto/cryptlib.c
-+++ openssl/crypto/cryptlib.c
-@@ -656,16 +656,6 @@ const char *CRYPTO_get_lock_name(int typ
+diff --git a/crypto/cryptlib.c b/crypto/cryptlib.c
+index c9f674b..c6ff6ff 100644
+--- a/crypto/cryptlib.c
++++ b/crypto/cryptlib.c
+@@ -656,16 +656,6 @@ const char *CRYPTO_get_lock_name(int type)
  extern unsigned int OPENSSL_ia32cap_P[4];
  unsigned long *OPENSSL_ia32cap_loc(void)
  {
@@ -4316,11 +4326,11 @@ Index: openssl/crypto/cryptlib.c
      return (unsigned long *)OPENSSL_ia32cap_P;
  }
  
-Index: openssl/crypto/evp/Makefile
-===================================================================
---- openssl.orig/crypto/evp/Makefile
-+++ openssl/crypto/evp/Makefile
-@@ -29,7 +29,8 @@ LIBSRC= encode.c digest.c evp_enc.c evp_
+diff --git a/crypto/evp/Makefile b/crypto/evp/Makefile
+index aaaad98..e30b588 100644
+--- a/crypto/evp/Makefile
++++ b/crypto/evp/Makefile
+@@ -29,7 +29,8 @@ LIBSRC= encode.c digest.c evp_enc.c evp_key.c evp_acnf.c evp_cnf.c \
  	c_all.c c_allc.c c_alld.c evp_lib.c bio_ok.c \
  	evp_pkey.c evp_pbe.c p5_crpt.c p5_crpt2.c \
  	e_old.c pmeth_lib.c pmeth_fn.c pmeth_gn.c m_sigver.c \
@@ -4330,7 +4340,7 @@ Index: openssl/crypto/evp/Makefile
  
  LIBOBJ=	encode.o digest.o evp_enc.o evp_key.o evp_acnf.o evp_cnf.o \
  	e_des.o e_bf.o e_idea.o e_des3.o e_camellia.o\
-@@ -42,7 +43,8 @@ LIBOBJ=	encode.o digest.o evp_enc.o evp_
+@@ -42,7 +43,8 @@ LIBOBJ=	encode.o digest.o evp_enc.o evp_key.o evp_acnf.o evp_cnf.o \
  	c_all.o c_allc.o c_alld.o evp_lib.o bio_ok.o \
  	evp_pkey.o evp_pbe.o p5_crpt.o p5_crpt2.o \
  	e_old.o pmeth_lib.o pmeth_fn.o pmeth_gn.o m_sigver.o \
@@ -4340,7 +4350,7 @@ Index: openssl/crypto/evp/Makefile
  
  SRC= $(LIBSRC)
  
-@@ -264,6 +266,7 @@ e_cast.o: ../../include/openssl/objects.
+@@ -263,6 +265,7 @@ e_cast.o: ../../include/openssl/objects.h ../../include/openssl/opensslconf.h
  e_cast.o: ../../include/openssl/opensslv.h ../../include/openssl/ossl_typ.h
  e_cast.o: ../../include/openssl/safestack.h ../../include/openssl/stack.h
  e_cast.o: ../../include/openssl/symhacks.h ../cryptlib.h e_cast.c evp_locl.h
@@ -4348,10 +4358,11 @@ Index: openssl/crypto/evp/Makefile
  e_des.o: ../../e_os.h ../../include/openssl/asn1.h ../../include/openssl/bio.h
  e_des.o: ../../include/openssl/buffer.h ../../include/openssl/crypto.h
  e_des.o: ../../include/openssl/des.h ../../include/openssl/des_old.h
-Index: openssl/crypto/evp/e_chacha20poly1305.c
-===================================================================
+diff --git a/crypto/evp/e_chacha20poly1305.c b/crypto/evp/e_chacha20poly1305.c
+new file mode 100644
+index 0000000..17f8cb4
 --- /dev/null
-+++ openssl/crypto/evp/e_chacha20poly1305.c
++++ b/crypto/evp/e_chacha20poly1305.c
 @@ -0,0 +1,435 @@
 +/* ====================================================================
 + * Copyright (c) 2001-2014 The OpenSSL Project.  All rights reserved.
@@ -4788,11 +4799,11 @@ Index: openssl/crypto/evp/e_chacha20poly1305.c
 +const EVP_CIPHER *EVP_chacha20_poly1305(void)
 +{ return &chacha20_poly1305; }
 +#endif
-Index: openssl/crypto/evp/evp.h
-===================================================================
---- openssl.orig/crypto/evp/evp.h
-+++ openssl/crypto/evp/evp.h
-@@ -893,6 +893,10 @@ const EVP_CIPHER *EVP_camellia_256_cfb12
+diff --git a/crypto/evp/evp.h b/crypto/evp/evp.h
+index 39ab793..53ed671 100644
+--- a/crypto/evp/evp.h
++++ b/crypto/evp/evp.h
+@@ -893,6 +893,10 @@ const EVP_CIPHER *EVP_camellia_256_cfb128(void);
  #  define EVP_camellia_256_cfb EVP_camellia_256_cfb128
  const EVP_CIPHER *EVP_camellia_256_ofb(void);
  # endif
@@ -4803,11 +4814,11 @@ Index: openssl/crypto/evp/evp.h
  
  # ifndef OPENSSL_NO_SEED
  const EVP_CIPHER *EVP_seed_ecb(void);
-Index: openssl/ssl/s3_lib.c
-===================================================================
---- openssl.orig/ssl/s3_lib.c
-+++ openssl/ssl/s3_lib.c
-@@ -2945,6 +2945,111 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[]
+diff --git a/ssl/s3_lib.c b/ssl/s3_lib.c
+index f846cb5..b0364c1 100644
+--- a/ssl/s3_lib.c
++++ b/ssl/s3_lib.c
+@@ -2891,6 +2891,111 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
       256},
  #endif
  
@@ -4919,7 +4930,7 @@ Index: openssl/ssl/s3_lib.c
  /* end of list */
  };
  
-@@ -4090,6 +4195,7 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, S
+@@ -4036,6 +4141,7 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, STACK_OF(SSL_CIPHER) *clnt,
      int i, ii, ok;
      CERT *cert;
      unsigned long alg_k, alg_a, mask_k, mask_a, emask_k, emask_a;
@@ -4927,7 +4938,7 @@ Index: openssl/ssl/s3_lib.c
  
      /* Let's see which ciphers we can support */
      cert = s->cert;
-@@ -4123,9 +4229,17 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, S
+@@ -4069,9 +4175,17 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, STACK_OF(SSL_CIPHER) *clnt,
      if (s->options & SSL_OP_CIPHER_SERVER_PREFERENCE || tls1_suiteb(s)) {
          prio = srvr;
          allow = clnt;
@@ -4945,7 +4956,7 @@ Index: openssl/ssl/s3_lib.c
      }
  
      tls1_set_cert_validity(s);
-@@ -4137,6 +4251,11 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, S
+@@ -4083,6 +4197,11 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, STACK_OF(SSL_CIPHER) *clnt,
          if ((c->algorithm_ssl & SSL_TLSV1_2) && !SSL_USE_TLS1_2_CIPHERS(s))
              continue;
  
@@ -4957,10 +4968,10 @@ Index: openssl/ssl/s3_lib.c
          ssl_set_cert_masks(cert, c);
          mask_k = cert->mask_k;
          mask_a = cert->mask_a;
-Index: openssl/ssl/ssl.h
-===================================================================
---- openssl.orig/ssl/ssl.h
-+++ openssl/ssl/ssl.h
+diff --git a/ssl/ssl.h b/ssl/ssl.h
+index ae8c925..c7635b6 100644
+--- a/ssl/ssl.h
++++ b/ssl/ssl.h
 @@ -294,6 +294,8 @@ extern "C" {
  # define SSL_TXT_AES256          "AES256"
  # define SSL_TXT_AES             "AES"
@@ -4970,10 +4981,10 @@ Index: openssl/ssl/ssl.h
  # define SSL_TXT_CAMELLIA128     "CAMELLIA128"
  # define SSL_TXT_CAMELLIA256     "CAMELLIA256"
  # define SSL_TXT_CAMELLIA        "CAMELLIA"
-Index: openssl/ssl/ssl_ciph.c
-===================================================================
---- openssl.orig/ssl/ssl_ciph.c
-+++ openssl/ssl/ssl_ciph.c
+diff --git a/ssl/ssl_ciph.c b/ssl/ssl_ciph.c
+index 6957bda..21eae5c 100644
+--- a/ssl/ssl_ciph.c
++++ b/ssl/ssl_ciph.c
 @@ -150,25 +150,27 @@
  #endif
  #include "ssl_locl.h"
@@ -5018,7 +5029,7 @@ Index: openssl/ssl/ssl_ciph.c
  };
  
  #define SSL_COMP_NULL_IDX       0
-@@ -362,6 +364,9 @@ static const SSL_CIPHER cipher_aliases[]
+@@ -363,6 +365,9 @@ static const SSL_CIPHER cipher_aliases[] = {
      {0, SSL3_TXT_DHE_RSA_DES_192_CBC3_SHA, 0,
       SSL_kDHE, SSL_aRSA, SSL_3DES, SSL_SHA1, SSL_SSLV3,
       SSL_NOT_EXP | SSL_HIGH | SSL_FIPS, 0, 0, 0,},
@@ -5028,7 +5039,7 @@ Index: openssl/ssl/ssl_ciph.c
  };
  
  /*
-@@ -431,6 +436,11 @@ void ssl_load_ciphers(void)
+@@ -432,6 +437,11 @@ void ssl_load_ciphers(void)
      ssl_cipher_methods[SSL_ENC_AES256GCM_IDX] =
          EVP_get_cipherbyname(SN_aes_256_gcm);
  
@@ -5040,7 +5051,7 @@ Index: openssl/ssl/ssl_ciph.c
      ssl_digest_methods[SSL_MD_MD5_IDX] = EVP_get_digestbyname(SN_md5);
      ssl_mac_secret_size[SSL_MD_MD5_IDX] =
          EVP_MD_size(ssl_digest_methods[SSL_MD_MD5_IDX]);
-@@ -581,6 +591,12 @@ int ssl_cipher_get_evp(const SSL_SESSION
+@@ -582,6 +592,12 @@ int ssl_cipher_get_evp(const SSL_SESSION *s, const EVP_CIPHER **enc,
      case SSL_AES256GCM:
          i = SSL_ENC_AES256GCM_IDX;
          break;
@@ -5053,7 +5064,7 @@ Index: openssl/ssl/ssl_ciph.c
      default:
          i = -1;
          break;
-@@ -796,6 +812,12 @@ static void ssl_cipher_get_disabled(unsi
+@@ -797,6 +813,12 @@ static void ssl_cipher_get_disabled(unsigned long *mkey, unsigned long *auth,
          (ssl_cipher_methods[SSL_ENC_AES256GCM_IDX] ==
           NULL) ? SSL_AES256GCM : 0;
      *enc |=
@@ -5066,7 +5077,7 @@ Index: openssl/ssl/ssl_ciph.c
          (ssl_cipher_methods[SSL_ENC_CAMELLIA128_IDX] ==
           NULL) ? SSL_CAMELLIA128 : 0;
      *enc |=
-@@ -1812,6 +1834,12 @@ char *SSL_CIPHER_description(const SSL_C
+@@ -1812,6 +1834,12 @@ char *SSL_CIPHER_description(const SSL_CIPHER *cipher, char *buf, int len)
      case SSL_AES256GCM:
          enc = "AESGCM(256)";
          break;
@@ -5079,10 +5090,10 @@ Index: openssl/ssl/ssl_ciph.c
      case SSL_CAMELLIA128:
          enc = "Camellia(128)";
          break;
-Index: openssl/ssl/ssl_locl.h
-===================================================================
---- openssl.orig/ssl/ssl_locl.h
-+++ openssl/ssl/ssl_locl.h
+diff --git a/ssl/ssl_locl.h b/ssl/ssl_locl.h
+index a8e4efc..67d355c 100644
+--- a/ssl/ssl_locl.h
++++ b/ssl/ssl_locl.h
 @@ -354,6 +354,8 @@
  # define SSL_SEED                0x00000800L
  # define SSL_AES128GCM           0x00001000L
@@ -5092,11 +5103,11 @@ Index: openssl/ssl/ssl_locl.h
  
  # define SSL_AES                 (SSL_AES128|SSL_AES256|SSL_AES128GCM|SSL_AES256GCM)
  # define SSL_CAMELLIA            (SSL_CAMELLIA128|SSL_CAMELLIA256)
-Index: openssl/ssl/tls1.h
-===================================================================
---- openssl.orig/ssl/tls1.h
-+++ openssl/ssl/tls1.h
-@@ -563,6 +563,20 @@ SSL_CTX_callback_ctrl(ssl,SSL_CTRL_SET_T
+diff --git a/ssl/tls1.h b/ssl/tls1.h
+index 7e237d0..fb0c981 100644
+--- a/ssl/tls1.h
++++ b/ssl/tls1.h
+@@ -563,6 +563,20 @@ SSL_CTX_callback_ctrl(ssl,SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB,(void (*)(void))cb)
  # define TLS1_CK_ECDH_RSA_WITH_AES_128_GCM_SHA256        0x0300C031
  # define TLS1_CK_ECDH_RSA_WITH_AES_256_GCM_SHA384        0x0300C032
  
@@ -5117,7 +5128,7 @@ Index: openssl/ssl/tls1.h
  /*
   * XXX * Backward compatibility alert: + * Older versions of OpenSSL gave
   * some DHE ciphers names with "EDH" + * instead of "DHE".  Going forward, we
-@@ -713,6 +727,20 @@ SSL_CTX_callback_ctrl(ssl,SSL_CTRL_SET_T
+@@ -713,6 +727,20 @@ SSL_CTX_callback_ctrl(ssl,SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB,(void (*)(void))cb)
  # define TLS1_TXT_ECDH_RSA_WITH_AES_128_GCM_SHA256       "ECDH-RSA-AES128-GCM-SHA256"
  # define TLS1_TXT_ECDH_RSA_WITH_AES_256_GCM_SHA384       "ECDH-RSA-AES256-GCM-SHA384"
  
@@ -5138,3 +5149,6 @@ Index: openssl/ssl/tls1.h
  # define TLS_CT_RSA_SIGN                 1
  # define TLS_CT_DSS_SIGN                 2
  # define TLS_CT_RSA_FIXED_DH             3
+-- 
+2.5.0
+

@@ -7,10 +7,10 @@ Subject: [PATCH] also create old hash for compatibility
  tools/c_rehash.in |    8 +++++++-
  1 files changed, 7 insertions(+), 1 deletions(-)
 
-Index: openssl/tools/c_rehash.in
+Index: openssl-1.0.2b/tools/c_rehash.in
 ===================================================================
---- openssl.orig/tools/c_rehash.in
-+++ openssl/tools/c_rehash.in
+--- openssl-1.0.2b.orig/tools/c_rehash.in
++++ openssl-1.0.2b/tools/c_rehash.in
 @@ -8,8 +8,6 @@ my $prefix;
  
  my $openssl = $ENV{OPENSSL} || "openssl";

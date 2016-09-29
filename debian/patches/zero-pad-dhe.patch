@@ -1,11 +1,11 @@
 zero pad DHE public key in ServerKeyExchange message for interop:
 https://github.com/openssl/openssl/pull/1350/commits/3bfdc80ef28664b4488a25cd65077b9a1cb488c8
 
-Index: openssl/ssl/s3_srvr.c
-===================================================================
---- openssl.orig/ssl/s3_srvr.c
-+++ openssl/ssl/s3_srvr.c
-@@ -1601,6 +1601,9 @@ int ssl3_send_server_key_exchange(SSL *s
+diff --git a/ssl/s3_srvr.c b/ssl/s3_srvr.c
+index c95d610..472d1a2 100644
+--- a/ssl/s3_srvr.c
++++ b/ssl/s3_srvr.c
+@@ -1600,6 +1600,9 @@ int ssl3_send_server_key_exchange(SSL *s)
      unsigned int u;
  #endif
  #ifndef OPENSSL_NO_DH
@@ -15,7 +15,7 @@ Index: openssl/ssl/s3_srvr.c
      DH *dh = NULL, *dhp;
  #endif
  #ifndef OPENSSL_NO_ECDH
-@@ -1862,6 +1865,16 @@ int ssl3_send_server_key_exchange(SSL *s
+@@ -1861,6 +1864,16 @@ int ssl3_send_server_key_exchange(SSL *s)
                  n += 1 + nr[i];
              else
  #endif
@@ -32,7 +32,7 @@ Index: openssl/ssl/s3_srvr.c
                  n += 2 + nr[i];
          }
  
-@@ -1896,6 +1909,20 @@ int ssl3_send_server_key_exchange(SSL *s
+@@ -1895,6 +1908,20 @@ int ssl3_send_server_key_exchange(SSL *s)
                  p++;
              } else
  #endif
