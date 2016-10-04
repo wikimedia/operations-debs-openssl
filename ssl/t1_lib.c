@@ -1429,7 +1429,7 @@ unsigned char *ssl_add_clienthello_tlsext(SSL *s, unsigned char *buf,
     }
  skip_ext:
 
-    if (SSL_CLIENT_USE_SIGALGS(s)) {
+    if (SSL_USE_SIGALGS(s)) {
         size_t salglen;
         const unsigned char *salg;
         salglen = tls12_get_psigalgs(s, &salg);
@@ -1867,11 +1867,11 @@ static void ssl_check_for_safari(SSL *s, const unsigned char *data,
         0x02, 0x03,             /* SHA-1/ECDSA */
     };
 
-    if (limit - data <= 2)
+    if (data >= (limit - 2))
         return;
     data += 2;
 
-    if (limit - data < 4)
+    if (data > (limit - 4))
         return;
     n2s(data, type);
     n2s(data, size);
@@ -1879,7 +1879,7 @@ static void ssl_check_for_safari(SSL *s, const unsigned char *data,
     if (type != TLSEXT_TYPE_server_name)
         return;
 
-    if (limit - data < size)
+    if (data + size > limit)
         return;
     data += size;
 
@@ -1887,7 +1887,7 @@ static void ssl_check_for_safari(SSL *s, const unsigned char *data,
         const size_t len1 = sizeof(kSafariExtensionsBlock);
         const size_t len2 = sizeof(kSafariTLS12ExtensionsBlock);
 
-        if (limit - data != (int)(len1 + len2))
+        if (data + len1 + len2 != limit)
             return;
         if (memcmp(data, kSafariExtensionsBlock, len1) != 0)
             return;
@@ -1896,7 +1896,7 @@ static void ssl_check_for_safari(SSL *s, const unsigned char *data,
     } else {
         const size_t len = sizeof(kSafariExtensionsBlock);
 
-        if (limit - data != (int)(len))
+        if (data + len != limit)
             return;
         if (memcmp(data, kSafariExtensionsBlock, len) != 0)
             return;
@@ -2053,19 +2053,19 @@ static int ssl_scan_clienthello_tlsext(SSL *s, unsigned char **p,
     if (data == limit)
         goto ri_check;
 
-    if (limit - data < 2)
+    if (data > (limit - 2))
         goto err;
 
     n2s(data, len);
 
-    if (limit - data != len)
+    if (data + len != limit)
         goto err;
 
-    while (limit - data >= 4) {
+    while (data <= (limit - 4)) {
         n2s(data, type);
         n2s(data, size);
 
-        if (limit - data < size)
+        if (data + size > (limit))
             goto err;
 # if 0
         fprintf(stderr, "Received extension type %d size %d\n", type, size);
@@ -2316,23 +2316,6 @@ static int ssl_scan_clienthello_tlsext(SSL *s, unsigned char **p,
                 size -= 2;
                 if (dsize > size)
                     goto err;
-
-                /*
-                 * We remove any OCSP_RESPIDs from a previous handshake
-                 * to prevent unbounded memory growth - CVE-2016-6304
-                 */
-                sk_OCSP_RESPID_pop_free(s->tlsext_ocsp_ids,
-                                        OCSP_RESPID_free);
-                if (dsize > 0) {
-                    s->tlsext_ocsp_ids = sk_OCSP_RESPID_new_null();
-                    if (s->tlsext_ocsp_ids == NULL) {
-                        *al = SSL_AD_INTERNAL_ERROR;
-                        return 0;
-                    }
-                } else {
-                    s->tlsext_ocsp_ids = NULL;
-                }
-
                 while (dsize > 0) {
                     OCSP_RESPID *id;
                     int idsize;
@@ -2351,6 +2334,13 @@ static int ssl_scan_clienthello_tlsext(SSL *s, unsigned char **p,
                     if (data != sdata) {
                         OCSP_RESPID_free(id);
                         goto err;
+                    }
+                    if (!s->tlsext_ocsp_ids
+                        && !(s->tlsext_ocsp_ids =
+                             sk_OCSP_RESPID_new_null())) {
+                        OCSP_RESPID_free(id);
+                        *al = SSL_AD_INTERNAL_ERROR;
+                        return 0;
                     }
                     if (!sk_OCSP_RESPID_push(s->tlsext_ocsp_ids, id)) {
                         OCSP_RESPID_free(id);
@@ -2482,18 +2472,18 @@ static int ssl_scan_clienthello_custom_tlsext(SSL *s,
     if (s->hit || s->cert->srv_ext.meths_count == 0)
         return 1;
 
-    if (limit - data <= 2)
+    if (data >= limit - 2)
         return 1;
     n2s(data, len);
 
-    if (limit - data < len)
+    if (data > limit - len)
         return 1;
 
-    while (limit - data >= 4) {
+    while (data <= limit - 4) {
         n2s(data, type);
         n2s(data, size);
 
-        if (limit - data < size)
+        if (data + size > limit)
             return 1;
         if (custom_ext_parse(s, 1 /* server */ , type, data, size, al) <= 0)
             return 0;
@@ -2579,20 +2569,20 @@ static int ssl_scan_serverhello_tlsext(SSL *s, unsigned char **p,
                              SSL_TLSEXT_HB_DONT_SEND_REQUESTS);
 # endif
 
-    if ((d + n) - data <= 2)
+    if (data >= (d + n - 2))
         goto ri_check;
 
     n2s(data, length);
-    if ((d + n) - data != length) {
+    if (data + length != d + n) {
         *al = SSL_AD_DECODE_ERROR;
         return 0;
     }
 
-    while ((d + n) - data >= 4) {
+    while (data <= (d + n - 4)) {
         n2s(data, type);
         n2s(data, size);
 
-        if ((d + n) - data < size)
+        if (data + size > (d + n))
             goto ri_check;
 
         if (s->tlsext_debug_cb)
@@ -2722,11 +2712,6 @@ static int ssl_scan_serverhello_tlsext(SSL *s, unsigned char **p,
                 *al = TLS1_AD_INTERNAL_ERROR;
                 return 0;
             }
-            /*
-             * Could be non-NULL if server has sent multiple NPN extensions in
-             * a single Serverhello
-             */
-            OPENSSL_free(s->next_proto_negotiated);
             s->next_proto_negotiated = OPENSSL_malloc(selected_len);
             if (!s->next_proto_negotiated) {
                 *al = TLS1_AD_INTERNAL_ERROR;
@@ -3322,33 +3307,29 @@ int tls1_process_ticket(SSL *s, unsigned char *session_id, int len,
     /* Skip past DTLS cookie */
     if (SSL_IS_DTLS(s)) {
         i = *(p++);
-
-        if (limit - p <= i)
-            return -1;
-
         p += i;
+        if (p >= limit)
+            return -1;
     }
     /* Skip past cipher list */
     n2s(p, i);
-    if (limit - p <= i)
-        return -1;
     p += i;
-
+    if (p >= limit)
+        return -1;
     /* Skip past compression algorithm list */
     i = *(p++);
-    if (limit - p < i)
-        return -1;
     p += i;
-
+    if (p > limit)
+        return -1;
     /* Now at start of extensions */
-    if (limit - p <= 2)
+    if ((p + 2) >= limit)
         return 0;
     n2s(p, i);
-    while (limit - p >= 4) {
+    while ((p + 4) <= limit) {
         unsigned short type, size;
         n2s(p, type);
         n2s(p, size);
-        if (limit - p < size)
+        if (p + size > limit)
             return 0;
         if (type == TLSEXT_TYPE_session_ticket) {
             int r;
@@ -3416,7 +3397,9 @@ static int tls_decrypt_ticket(SSL *s, const unsigned char *etick,
     HMAC_CTX hctx;
     EVP_CIPHER_CTX ctx;
     SSL_CTX *tctx = s->initial_ctx;
-
+    /* Need at least keyname + iv + some encrypted data */
+    if (eticklen < 48)
+        return 2;
     /* Initialize session ticket encryption and HMAC contexts */
     HMAC_CTX_init(&hctx);
     EVP_CIPHER_CTX_init(&ctx);
@@ -3450,13 +3433,6 @@ static int tls_decrypt_ticket(SSL *s, const unsigned char *etick,
     if (mlen < 0) {
         goto err;
     }
-    /* Sanity check ticket length: must exceed keyname + IV + HMAC */
-    if (eticklen <= 16 + EVP_CIPHER_CTX_iv_length(&ctx) + mlen) {
-        HMAC_CTX_cleanup(&hctx);
-        EVP_CIPHER_CTX_cleanup(&ctx);
-        return 2;
-    }
-
     eticklen -= mlen;
     /* Check HMAC of encrypted ticket */
     if (HMAC_Update(&hctx, etick, eticklen) <= 0
@@ -3926,7 +3902,7 @@ int tls1_process_heartbeat(SSL *s)
         memcpy(bp, pl, payload);
         bp += payload;
         /* Random padding */
-        if (RAND_bytes(bp, padding) <= 0) {
+        if (RAND_pseudo_bytes(bp, padding) < 0) {
             OPENSSL_free(buffer);
             return -1;
         }
@@ -4004,8 +3980,6 @@ int tls1_heartbeat(SSL *s)
      *  - Padding
      */
     buf = OPENSSL_malloc(1 + 2 + payload + padding);
-    if (buf == NULL)
-        return -1;
     p = buf;
     /* Message Type */
     *p++ = TLS1_HB_REQUEST;
@@ -4014,13 +3988,13 @@ int tls1_heartbeat(SSL *s)
     /* Sequence number */
     s2n(s->tlsext_hb_seq, p);
     /* 16 random bytes */
-    if (RAND_bytes(p, 16) <= 0) {
+    if (RAND_pseudo_bytes(p, 16) < 0) {
         SSLerr(SSL_F_TLS1_HEARTBEAT, ERR_R_INTERNAL_ERROR);
         goto err;
     }
     p += 16;
     /* Random padding */
-    if (RAND_bytes(p, padding) <= 0) {
+    if (RAND_pseudo_bytes(p, padding) < 0) {
         SSLerr(SSL_F_TLS1_HEARTBEAT, ERR_R_INTERNAL_ERROR);
         goto err;
     }

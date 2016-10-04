@@ -912,8 +912,6 @@ static int serverinfo_process_buffer(const unsigned char *serverinfo,
 int SSL_CTX_use_serverinfo(SSL_CTX *ctx, const unsigned char *serverinfo,
                            size_t serverinfo_length)
 {
-    unsigned char *new_serverinfo;
-
     if (ctx == NULL || serverinfo == NULL || serverinfo_length == 0) {
         SSLerr(SSL_F_SSL_CTX_USE_SERVERINFO, ERR_R_PASSED_NULL_PARAMETER);
         return 0;
@@ -930,13 +928,12 @@ int SSL_CTX_use_serverinfo(SSL_CTX *ctx, const unsigned char *serverinfo,
         SSLerr(SSL_F_SSL_CTX_USE_SERVERINFO, ERR_R_INTERNAL_ERROR);
         return 0;
     }
-    new_serverinfo = OPENSSL_realloc(ctx->cert->key->serverinfo,
-                                     serverinfo_length);
-    if (new_serverinfo == NULL) {
+    ctx->cert->key->serverinfo = OPENSSL_realloc(ctx->cert->key->serverinfo,
+                                                 serverinfo_length);
+    if (ctx->cert->key->serverinfo == NULL) {
         SSLerr(SSL_F_SSL_CTX_USE_SERVERINFO, ERR_R_MALLOC_FAILURE);
         return 0;
     }
-    ctx->cert->key->serverinfo = new_serverinfo;
     memcpy(ctx->cert->key->serverinfo, serverinfo, serverinfo_length);
     ctx->cert->key->serverinfo_length = serverinfo_length;
 

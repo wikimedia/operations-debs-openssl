@@ -332,10 +332,9 @@ int MAIN(int argc, char **argv)
             subject = 1;
         else if (strcmp(*argv, "-text") == 0)
             text = 1;
-        else if (strcmp(*argv, "-x509") == 0) {
-            newreq = 1;
+        else if (strcmp(*argv, "-x509") == 0)
             x509 = 1;
-        } else if (strcmp(*argv, "-asn1-kludge") == 0)
+        else if (strcmp(*argv, "-asn1-kludge") == 0)
             kludge = 1;
         else if (strcmp(*argv, "-no-asn1-kludge") == 0)
             kludge = 0;
@@ -757,7 +756,7 @@ int MAIN(int argc, char **argv)
         }
     }
 
-    if (newreq) {
+    if (newreq || x509) {
         if (pkey == NULL) {
             BIO_printf(bio_err, "you need to specify a private key\n");
             goto end;
@@ -1332,11 +1331,12 @@ static int auto_info(X509_REQ *req, STACK_OF(CONF_VALUE) *dn_sk,
                 break;
             }
 #ifndef CHARSET_EBCDIC
-        if (*type == '+') {
+        if (*p == '+')
 #else
-        if (*type == os_toascii['+']) {
+        if (*p == os_toascii['+'])
 #endif
-            type++;
+        {
+            p++;
             mval = -1;
         } else
             mval = 0;

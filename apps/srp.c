@@ -765,6 +765,4 @@ int MAIN(int argc, char **argv)
     OPENSSL_EXIT(ret);
 }
 
-#else
-static void *dummy = &dummy;
 #endif
