@@ -1,4 +1,3 @@
-ca.patch
 config-hurd.patch
 debian-targets.patch
 engines-path.patch

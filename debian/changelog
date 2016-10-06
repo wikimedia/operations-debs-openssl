@@ -1,6 +1,7 @@
 openssl (1.0.2i-1~wmf1) jessie-wikimedia; urgency=medium
 
   * Update to 1.0.2i
+  * Remove ca.patch, now obsolete
 
  -- Moritz Muehlenhoff <mmuhlenhoff@wikimedia.org>  Thu, 06 Oct 2016 08:46:50 +0200
 
