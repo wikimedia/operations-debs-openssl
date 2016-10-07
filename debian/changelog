@@ -1,3 +1,9 @@
+openssl (1.0.2j-1~wmf1) jessie-wikimedia; urgency=medium
+
+  * Update to 1.0.2j
+
+ -- Moritz Muehlenhoff <mmuhlenhoff@wikimedia.org>  Fri, 07 Oct 2016 12:13:18 +0200
+
 openssl (1.0.2i-1~wmf1) jessie-wikimedia; urgency=medium
 
   * Update to 1.0.2i
