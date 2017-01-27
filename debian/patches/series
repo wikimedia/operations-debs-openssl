@@ -15,7 +15,6 @@ block_digicert_malaysia.patch
 #padlock_conf.patch
 disable_freelist.patch
 extend-version-script.patch
-zero-pad-dhe.patch
 cloudflare-c20p1305.patch
 cloudflare-c20p1305-sym.patch
 more-chapoly.patch

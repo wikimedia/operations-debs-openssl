@@ -1,6 +1,8 @@
 openssl (1.0.2k-1~wmf1) jessie-wikimedia; urgency=medium
 
   * Update to 1.0.2k
+  * Drop patch zero-pad-dhe.patch, merged in 1.0.2k:
+    https://git.openssl.org/?p=openssl.git;a=commit;h=5bbedd3cc1d380595a6cc459e6546bb649f16a0b
 
  -- Moritz Muehlenhoff <mmuhlenhoff@wikimedia.org>  Fri, 27 Jan 2017 09:23:07 +0100
 
