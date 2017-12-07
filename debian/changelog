@@ -1,6 +1,7 @@
 openssl (1.0.2n-1~wmf1) jessie-wikimedia; urgency=medium
 
   * Update to 1.0.2n
+  * Refresh valgrind.patch
 
  -- Moritz Muehlenhoff <mmuhlenhoff@wikimedia.org>  Thu, 07 Dec 2017 15:52:39 +0100
 
